@@ -1,10 +1,8 @@
-package com.program;
+package com.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import com.db.DB;
 
 public class RecuperandoDados {
     public static void main(String[] args) {
