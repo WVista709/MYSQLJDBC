@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 
 public class InserirDados {
     public static void main(String[] args) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Connection conn = null;
         PreparedStatement pt = null;
 

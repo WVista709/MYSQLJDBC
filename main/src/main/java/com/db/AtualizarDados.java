@@ -11,10 +11,10 @@ public class AtualizarDados {
         try {
             conn = DB.getConnection();
 
-            String linha = "UPDATE seller" 
-            + "SET BaseSalary + ?"
-            + "WHERE "
-            + "(DepartmentId = ?)";
+            String linha = "UPDATE seller "
+                    + "SET BaseSalary = ? "
+                    + "WHERE "
+                    + "(DepartmentId = ?)";
             pt = conn.prepareStatement(linha);
             pt.setDouble(1, 200);
             pt.setInt(2, 2);
@@ -22,9 +22,8 @@ public class AtualizarDados {
             int atualizarLinha = pt.executeUpdate();
             System.out.println("Feito linhas afetadas: " + atualizarLinha);
         } catch (Exception e) {
-            e.getMessage();
-        }
-        finally {
+            throw new DbException(e.getMessage());
+        } finally {
             DB.closeConnection();
             DB.closeStatement(pt);
         }
