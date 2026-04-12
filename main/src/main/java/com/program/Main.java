@@ -1,13 +1,14 @@
 package com.program;
 
-import java.sql.Connection;
+import java.util.Date;
 
-import com.db.DB;
-import com.departamento.Departamento;
+import com.entidades.Departamento;
+import com.entidades.Vendedor;
 
 public class Main {
     public static void main(String[] args) {
         Departamento departamento = new Departamento("Livros", 1);
-        System.out.println(departamento);
+        Vendedor vendendor = new Vendedor(21, "Bob", "bob@gmail.com", new Date(), 3000.00, departamento);
+        System.out.println(vendendor);
     }
 }
