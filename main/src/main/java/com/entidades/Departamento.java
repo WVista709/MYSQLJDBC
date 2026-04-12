@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Departamento implements Serializable{
     private static final long serialVersionUID = 1L;
     private String nome;
-    private int id;
+    private Integer id;
 
     public String getNome() {
         return nome;
