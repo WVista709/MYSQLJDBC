@@ -19,7 +19,7 @@ public class InserirDados {
                     + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
                     + "Values"
                     + "(?, ?, ?, ?, ?)";
-                    
+
             pt = conn.prepareStatement(inserindoDados, Statement.RETURN_GENERATED_KEYS);
 
             pt.setString(1, "Davi carlos");
@@ -33,7 +33,7 @@ public class InserirDados {
             if (executandoLinha > 0) {
                 ResultSet rs = pt.getGeneratedKeys();
 
-                while (rs.next()) {     
+                while (rs.next()) {
                     int id = rs.getInt(1);
                     System.out.println("Feito ID = " + id);
                 }
@@ -43,6 +43,9 @@ public class InserirDados {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        } finally {
+            DB.closeStatement(pt);
+            DB.closeConnection();
         }
     }
 }

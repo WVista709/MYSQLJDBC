@@ -24,8 +24,8 @@ public class AtualizarDados {
         } catch (Exception e) {
             throw new DbException(e.getMessage());
         } finally {
-            DB.closeConnection();
             DB.closeStatement(pt);
+            DB.closeConnection();
         }
     }
 }
