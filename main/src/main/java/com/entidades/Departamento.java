@@ -7,6 +7,9 @@ public class Departamento implements Serializable{
     private String nome;
     private Integer id;
 
+    public Departamento() {
+    }
+
     public String getNome() {
         return nome;
     }

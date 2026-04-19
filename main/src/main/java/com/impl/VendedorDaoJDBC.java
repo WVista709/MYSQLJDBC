@@ -1,11 +1,24 @@
 package com.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.dao.VendedorDao;
+import com.db.DB;
+import com.db.DbException;
+import com.entidades.Departamento;
 import com.entidades.Vendedor;
 
 public class VendedorDaoJDBC implements VendedorDao {
+
+    private Connection conn;
+
+    public VendedorDaoJDBC(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
     public void inserir(Vendedor vendedor) {
@@ -27,8 +40,41 @@ public class VendedorDaoJDBC implements VendedorDao {
 
     @Override
     public Vendedor procurarPorID(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'procurarPorID'");
+        PreparedStatement pt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT seller.*, department.Name as DepName "
+            + "FROM seller INNER JOIN department "
+            + "ON seller.DepartmentId = department.Id "
+            + "WHERE seller.Id = ?";
+
+            pt = conn.prepareStatement(sql);
+            pt.setInt(1, id);
+            rs = pt.executeQuery();
+
+            if (rs.next()) {
+                Departamento dep = new Departamento();
+                dep.setId(rs.getInt("departmentId"));
+                dep.setNome(rs.getString("DepName"));
+                Vendedor obj = new Vendedor();
+                obj.setId(rs.getInt("Id"));
+                obj.setNome(rs.getString("Name"));
+                obj.setEmail(rs.getString("Email"));
+                obj.setSalarioBase(rs.getDouble("BaseSalary"));
+                obj.setDataDeAniversario(rs.getDate("BirthDate"));
+                obj.setDepartamento(dep);
+                return obj;
+            }
+
+            return null;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }
+        finally {
+            DB.closeStatement(pt);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
