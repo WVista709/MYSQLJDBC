@@ -83,8 +83,19 @@ public class VendedorDaoJDBC implements VendedorDao {
 
     @Override
     public void deletarPorID(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletarPorID'");
+        PreparedStatement ps = null;
+
+        try {
+            String sql = "DELETE FROM SELLER WHERE ID = ?";
+            ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+        }
     }
 
     @Override
