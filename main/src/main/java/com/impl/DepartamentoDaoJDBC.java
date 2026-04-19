@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.dao.DepartamentoDao;
 import com.db.DB;
 import com.db.DbException;
+import com.db.DbIntegrityException;
 import com.entidades.Departamento;
 
 public class DepartamentoDaoJDBC implements DepartamentoDao {
@@ -28,7 +30,7 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
             String sql = "INSERT INTO department (Name) VALUES (?) ";
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, departamento.getNome());
-            
+
             int atualizarLinha = ps.executeUpdate();
 
             if (atualizarLinha > 0) {
@@ -50,26 +52,80 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
 
     @Override
     public void atualizar(Departamento departamento) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'atualizar'");
+        PreparedStatement ps = null;
+
+        try {
+            String sql = "UPDATE department SET NAME = ? WHERE ID = ?";
+            ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, departamento.getNome());
+            ps.setInt(2, departamento.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }
     }
 
     @Override
     public void deletarPorID(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletarPorID'");
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement("DELETE FROM department WHERE Id = ?");
+            st.setInt(1, id);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbIntegrityException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
     public Departamento procurarPorID(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'procurarPorID'");
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM department WHERE Id = ?");
+            st.setInt(1, id);
+            rs = st.executeQuery();
+            if (rs.next()) {
+                Departamento obj = new Departamento();
+                obj.setId(rs.getInt("Id"));
+                obj.setNome(rs.getString("Name"));
+                return obj;
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
     public List<Departamento> procurarTudo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'procurarTudo'");
-    }
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM department ORDER BY Name");
+            rs = st.executeQuery();
 
+            List<Departamento> list = new ArrayList<>();
+
+            while (rs.next()) {
+                Departamento obj = new Departamento();
+                obj.setId(rs.getInt("Id"));
+                obj.setNome(rs.getString("Name"));
+                list.add(obj);
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
+    }
 }
