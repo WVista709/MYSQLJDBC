@@ -9,7 +9,7 @@ import com.dao.VendedorDao;
 import com.entidades.Departamento;
 import com.entidades.Vendedor;
 
-public class Main {
+public class VendendorTeste {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         VendedorDao vendedorDao = DaoFactory.criandoVendedorDao();
@@ -49,5 +49,6 @@ public class Main {
         int id = sc.nextInt(8);
         vendedorDao.deletarPorID(id);
         System.out.println("Deletado");
+        sc.close();        
     }
 }
