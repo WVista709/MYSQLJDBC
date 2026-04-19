@@ -2,6 +2,7 @@ package com.dao;
 
 import java.util.List;
 
+import com.entidades.Departamento;
 import com.entidades.Vendedor;
 
 public interface VendedorDao {
@@ -10,4 +11,5 @@ public interface VendedorDao {
     void deletarPorID(Integer id);
     Vendedor procurarPorID(Integer id);
     List<Vendedor> procurarTudo();
+    List<Vendedor> procurandoDepartamento(Departamento departamento);
 }

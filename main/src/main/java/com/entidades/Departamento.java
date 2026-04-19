@@ -2,12 +2,17 @@ package com.entidades;
 
 import java.io.Serializable;
 
-public class Departamento implements Serializable{
+public class Departamento implements Serializable {
     private static final long serialVersionUID = 1L;
     private String nome;
     private Integer id;
 
     public Departamento() {
+    }
+
+    public Departamento(Integer id, String nome) {
+        this.nome = nome;
+        this.id = id;
     }
 
     public String getNome() {

@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.dao.VendedorDao;
 import com.db.DB;
@@ -89,6 +92,46 @@ public class VendedorDaoJDBC implements VendedorDao {
     public List<Vendedor> procurarTudo() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'procurarTudo'");
+    }
+
+    @Override
+    public List<Vendedor> procurandoDepartamento(Departamento departamento) {
+        PreparedStatement pt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT seller.*, department.Name as DepName "
+                    + "FROM seller INNER JOIN department "
+                    + "ON seller.DepartmentId = department.Id "
+                    + "WHERE DepartmentId = ? "
+                    + "ORDER BY Name";
+
+            pt = conn.prepareStatement(sql);
+            pt.setInt(1, departamento.getId());
+            rs = pt.executeQuery();
+
+            List<Vendedor> list = new ArrayList<>();
+            Map<Integer, Departamento> map = new HashMap<>();
+
+            while (rs.next()) {
+                Departamento dep = map.get(rs.getInt("DepartmentId"));
+
+                if (dep == null) {
+                    dep = instanciarDepartamento(rs);
+                    map.put(rs.getInt("DepartmentId"), dep);
+                }
+
+                Vendedor obj = instanciarVendendor(rs, dep);
+                list.add(obj);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(pt);
+            DB.closeResultSet(rs);
+        }
     }
 
 }
