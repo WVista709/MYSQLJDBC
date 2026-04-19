@@ -31,9 +31,15 @@ public class Main {
             System.out.println(obj);
         }
 
-        System.out.println("======= TESTE 4: Achando todos os vendendores =======");
+        System.out.println("======= TESTE 4: Inserindo um novo vendendor =======");
         Vendedor novoVendedor = new Vendedor(null, "Greg", "Greg@gmail.com", new Date(), 4000.00, dep);
         vendedorDao.inserir(novoVendedor);
         System.out.println("Novo vendendor: " + novoVendedor.getId());
+
+        System.out.println("======= TESTE 5: Atualizando o cadastro de um vendendor =======");
+        vendendor = vendedorDao.procurarPorID(1);
+        vendendor.setNome("Marta Waine");
+        vendedorDao.atualizar(vendendor);
+        System.out.print("Atualização completa");
     }
 }

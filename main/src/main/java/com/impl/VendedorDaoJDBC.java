@@ -1,6 +1,5 @@
 package com.impl;
 
-import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,8 +60,25 @@ public class VendedorDaoJDBC implements VendedorDao {
 
     @Override
     public void atualizar(Vendedor vendedor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'atualizar'");
+        PreparedStatement ps = null;
+        try {
+            String sql = "UPDATE SELLER "
+                    + "SET NAME = ?, EMAIL = ?, BIRTHDATE = ?, BASESALARY = ?, DEPARTMENTID = ? "
+                    + "WHERE ID = ?";
+            ps = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, vendedor.getNome());
+            ps.setString(2, vendedor.getEmail());
+            ps.setDate(3, new java.sql.Date(vendedor.getDataDeAniversario().getTime()));
+            ps.setDouble(4, vendedor.getSalarioBase());
+            ps.setInt(5, vendedor.getDepartamento().getId());
+            ps.setInt(6, vendedor.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+        }
     }
 
     @Override
