@@ -1,5 +1,6 @@
 package com.impl;
 
+import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,8 +26,37 @@ public class VendedorDaoJDBC implements VendedorDao {
 
     @Override
     public void inserir(Vendedor vendedor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inserir'");
+        PreparedStatement ps = null;
+        try {
+            String sql = "INSERT INTO seller "
+                    + "(NAME, EMAIL, BIRTHDATE, BASESALARY, DEPARTMENTID) "
+                    + "VALUES "
+                    + "(?, ?, ?, ?, ?) ";
+            ps = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, vendedor.getNome());
+            ps.setString(2, vendedor.getEmail());
+            ps.setDate(3, new java.sql.Date(vendedor.getDataDeAniversario().getTime()));
+            ps.setDouble(4, vendedor.getSalarioBase());
+            ps.setInt(5, vendedor.getDepartamento().getId());
+
+            int atualizarLinha = ps.executeUpdate();
+
+            if (atualizarLinha > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    vendedor.setId(id);
+                } 
+                DB.closeResultSet(rs);
+            } else {
+                throw new DbException("ERRO INESPERADO: nenhuma linha afetada!");
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+        }
     }
 
     @Override

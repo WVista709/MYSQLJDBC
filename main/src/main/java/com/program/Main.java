@@ -1,5 +1,6 @@
 package com.program;
 
+import java.util.Date;
 import java.util.List;
 
 import com.dao.DaoFactory;
@@ -29,5 +30,10 @@ public class Main {
         for (Vendedor obj : list) {
             System.out.println(obj);
         }
+
+        System.out.println("======= TESTE 4: Achando todos os vendendores =======");
+        Vendedor novoVendedor = new Vendedor(null, "Greg", "Greg@gmail.com", new Date(), 4000.00, dep);
+        vendedorDao.inserir(novoVendedor);
+        System.out.println("Novo vendendor: " + novoVendedor.getId());
     }
 }
