@@ -90,8 +90,40 @@ public class VendedorDaoJDBC implements VendedorDao {
 
     @Override
     public List<Vendedor> procurarTudo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'procurarTudo'");
+        PreparedStatement pt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT seller.*, department.Name as DepName "
+                    + "FROM seller INNER JOIN department "
+                    + "ON seller.DepartmentId = department.Id "
+                    + "ORDER BY Name";
+
+            pt = conn.prepareStatement(sql);
+            rs = pt.executeQuery();
+
+            List<Vendedor> list = new ArrayList<>();
+            Map<Integer, Departamento> map = new HashMap<>();
+
+            while (rs.next()) {
+                Departamento dep = map.get(rs.getInt("DepartmentId"));
+
+                if (dep == null) {
+                    dep = instanciarDepartamento(rs);
+                    map.put(rs.getInt("DepartmentId"), dep);
+                }
+
+                Vendedor obj = instanciarVendendor(rs, dep);
+                list.add(obj);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(pt);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
@@ -133,5 +165,4 @@ public class VendedorDaoJDBC implements VendedorDao {
             DB.closeResultSet(rs);
         }
     }
-
 }

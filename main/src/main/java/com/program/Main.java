@@ -22,5 +22,12 @@ public class Main {
         for (Vendedor obj : list) {
             System.out.println(obj);
         }
+
+        System.out.println("======= TESTE 3: Achando todos os vendendores =======");
+        list = vendedorDao.procurarTudo();
+
+        for (Vendedor obj : list) {
+            System.out.println(obj);
+        }
     }
 }
